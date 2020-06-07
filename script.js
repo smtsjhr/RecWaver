@@ -1,6 +1,11 @@
+var record_animation = false;
+var name = "image_"
+
 
 var get_mouse_pos = false;
 var get_touch_pos = false;
+
+
 
 var x_touch = 0;
 var y_touch = 0;
@@ -11,6 +16,7 @@ var angle = Math.PI/4;
 var frame = 0;
 var total_frames = 300;
 var t = 0;
+var total_time = 2*Math.PI;
 var rate = 2*Math.PI/total_frames;
 var loop = 0;
 
@@ -20,8 +26,8 @@ var fps, fpsInterval, startTime, now, then, elapsed;
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
-const W = canvas.width;
-const H = canvas.height;
+const W = canvas.width = 300;
+const H = canvas.height = 300;
 
 
 startAnimating(50);
@@ -50,6 +56,8 @@ function draw() {
 
     frame = (frame + 1)%total_frames;
     t = -(frame*rate);
+
+    p = 3*Math.PI + 3*Math.PI*Math.cos(t);
     
     
   //window.requestAnimationFrame(draw);
@@ -105,7 +113,32 @@ function animate(newtime) {
 
     if (elapsed > fpsInterval) {
         then = now - (elapsed % fpsInterval);
-        draw();  
+        draw();
+        
+      
+
+        if(record_animation) {
+
+            if (loop === 1) { 
+            let frame_number = frame.toString().padStart(total_frames.toString().length, '0');
+            let filename = name+frame_number+'.png'
+                
+            dataURL = canvas.toDataURL();
+            var element = document.createElement('a');
+            element.setAttribute('href', dataURL);
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            }
+
+            if (frame + 1 === total_frames) {
+                loop += 1;
+            }
+
+            if (loop === 2) { stop_animation = true }
+        }
     }
 }
 
